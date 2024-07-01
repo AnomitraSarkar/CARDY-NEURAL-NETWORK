@@ -20,15 +20,29 @@
 # plt.scatter(X[:,0],X[:,1],c=y,cmap="brg")
 # plt.show()
 
+# import math
+
+# layer_outputs = [4.8,1.21,2.385]
+# generic = [i/sum(layer_outputs) for i in layer_outputs]
+# E = math.e
+
+# exp_values = [E**i for i in layer_outputs]
+
+# normalize = [i/sum(exp_values) for i in exp_values]
+
+
+# print("Legible:" ,generic)
+# print("Softmax:" ,normalize)
+
+import numpy as np
 import math
 
-layer_outputs = [4.8,1.21,2.385]
+softmax_output = [0.7,0.1,0.2]
+target_output = [1,0,0]
 
-E = math.e
+loss = -(math.log(softmax_output[0])*target_output[0] + math.log(softmax_output[1])*target_output[1] + math.log(softmax_output[2])*target_output[2] )
 
-exp_values = [E**i for i in layer_outputs]
+print(loss)
 
-normalize = [i/sum(exp_values) for i in exp_values]
-
-
-print(normalize)
+loss = -math.log(0.5)
+print(loss)

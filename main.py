@@ -4,9 +4,9 @@ from nnfs.datasets import spiral_data
 
 nnfs.init()
 
-X = [[1,2,3,2.5],
-          [2.0,5.0,-1.0,2.0],
-          [-1.5,2.7,3.3, -0.8]]
+# X = [[1,2,3,2.5],
+#           [2.0,5.0,-1.0,2.0],
+#           [-1.5,2.7,3.3, -0.8]]
 
 X, y = spiral_data(100,3)
 
@@ -23,19 +23,56 @@ class Activation_ReLU:
         self.output = np.maximum(0,inputs)    
         
 
+class Activation_Softmax:
+    def forward(self,inputs):
+        exp_values = np.exp(inputs - np.max(inputs,axis=1,keepdims=True))
+        prob = exp_values/np.sum(exp_values,axis=1,keepdims=True)
+        self.output = prob
 
+class Loss:
+    def calculate(self, output, y):
+        sample_losses = self.forward(output, y)
+        data_loss = np.mean(sample_losses)
+        return data_loss
 
-
-
+class Loss_Categorical_Cross_Entropy(Loss):
+    def forward(self, y_pred, y_true):
+        sample = len(y_pred)
+        y_pred_clipped = np.clip(y_pred, 1e-7 , 1-1e-7)
         
+        if len(y_true.shape) == 1:
+            correct_confidences = y_pred_clipped[range(sample), y_true]
+        elif len(y_true.shape) == 2:
+            correct_confidences = np.sum(y_pred_clipped*y_true, axis = 1)
+            
+        negative_log_likelihoods = -np.log(correct_confidences)
+        return negative_log_likelihoods
         
-layer1 = Layer_Dense(2,5)
+
+X,y = spiral_data(samples=100,classes=3)
+dense1 = Layer_Dense(2,3)
 activation1 = Activation_ReLU()
+dense2 = Layer_Dense(3,3)
+activation2 = Activation_Softmax()
 
-layer1.forward(X)
-print(layer1.output)
-activation1.forward(layer1.output)
-print(activation1.output)
+
+dense1.forward(X)
+activation1.forward(dense1.output)
+dense2.forward(activation1.output)
+activation2.forward(dense2.output)
+print(activation2.output)
+
+loss_function = Loss_Categorical_Cross_Entropy()
+loss = loss_function.calculate(activation2.output, y)
+        
+print(loss)
+# layer1 = Layer_Dense(2,5)
+# activation1 = Activation_ReLU()
+
+# layer1.forward(X)
+# print(layer1.output)
+# activation1.forward(layer1.output)
+# print(activation1.output)
 # layer2 = Layer_Dense(5,2)
 
 # layer1.forward(X)
