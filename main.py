@@ -1,5 +1,6 @@
 import numpy as np
 import nnfs
+import csv
 from nnfs.datasets import spiral_data
 
 nnfs.init()
@@ -8,7 +9,14 @@ nnfs.init()
 #           [2.0,5.0,-1.0,2.0],
 #           [-1.5,2.7,3.3, -0.8]]
 
-X, y = spiral_data(100,3)
+X, y = spiral_data(1000,3)
+
+f = open("spiral.csv","w",newline="")
+csv_writer = csv.writer(f)
+for i,j in zip(X,y):
+    rec = [i[0],i[1],j]
+    csv_writer.writerow(rec)
+f.close()
 
 class Layer_Dense:
     def __init__(self, n_inputs, n_neurons):
@@ -55,12 +63,15 @@ activation1 = Activation_ReLU()
 dense2 = Layer_Dense(3,3)
 activation2 = Activation_Softmax()
 
+print(X.shape)
+
 
 dense1.forward(X)
+print(dense1.output.shape)
+
 activation1.forward(dense1.output)
 dense2.forward(activation1.output)
 activation2.forward(dense2.output)
-print(activation2.output)
 
 loss_function = Loss_Categorical_Cross_Entropy()
 loss = loss_function.calculate(activation2.output, y)
