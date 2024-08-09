@@ -4,7 +4,7 @@ import random
 import csv, math
 
 def f(x):# provide any function here
-    return math.sin(math.e**x)
+    return 2*x**4-(3*x**2)+2*x
 
 xvals = []
 fxvals = []
@@ -12,10 +12,10 @@ fxvals = []
 #     xvals.append()
 #     fxvals.append(f((i-5*random.random())))
 
-xvals = np.arange(-3.14, 5, 0.05).tolist()
+xvals = np.arange(-2, 2, 0.05).tolist()
 print(xvals)
 for i in xvals:
-    fxvals.append(f((i-5*random.random())))
+    fxvals.append(f(i))
 f=open("data.csv","w",newline="")
 csv_writer = csv.writer(f)
 csv_writer.writerow(["X","FX"])
